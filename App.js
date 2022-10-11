@@ -1,20 +1,217 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Button, Input, Avatar, ListItem, Header } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function App() {
+function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Avatar
+          size={'large'}
+          rounded
+          source={{
+            uri:
+              'https://cdn2.iconfinder.com/data/icons/circle-avatars-1/128/050_girl_avatar_profile_woman_suit_student_officer-512.png',
+          }}
+        />
+      </View>
+
+      <Input
+        label='Login'
+      />
+      <Input
+        label='Senha'
+        secureTextEntry={true}
+      />
+      <Button
+        buttonStyle={{ width: 365 }}
+        title="Login"
+        onPress={() => navigation.navigate('listScreen')}
+      />
+      <Button
+        buttonStyle={{ width: 365, backgroundColor: 'red', marginTop: 15 }}
+        title="Cadastrar-se"
+        onPress={() => navigation.navigate('cadastrarScreen')}
+      />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+      </View>
+    </View>
+
+  );
+}
+function CadastrarScreen({ navigation }) {
+  return (
+    <View>
+      <Header
+        centerComponent={{ text: 'Usuário', style: { color: '#fff', fontSize: 20 } }}
+        leftComponent={<Icon onPress={() => navigation.navigate('Home')} name="arrow-left" size={24} color="#ffffff"></Icon>}
+
+      />
+
+      <Input
+        label='nome'
+      />
+      <Input
+        label='cpf'
+      />
+      <Input
+        label='email'
+      />
+      <Input
+        label='Senha'
+        secureTextEntry={true}
+      />
+      <Button
+        buttonStyle={{ width: 365, alignSelf: 'center' }}
+        title="Salvar"
+      />
+
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+      </View>
+    </View>
+
+  );
+}
+
+function adicionarContatoScreen({ navigation }) {
+  return (
+    <View>
+      <Header
+        centerComponent={{ text: 'Contato', style: { color: '#fff', fontSize: 20 } }}
+        leftComponent={<Icon onPress={() => navigation.navigate('listScreen')} name="arrow-left" size={24} color="#ffffff"></Icon>}
+
+      />
+
+      <Input
+        label='nome'
+      />
+      <Input
+        label='email'
+      />
+      <Input
+        label='Telefone'
+
+      />
+      <Button
+        buttonStyle={{ width: 365, alignSelf: 'center' }}
+        title="Salvar"
+      />
+
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+      </View>
+    </View>
+
+  );
+}
+
+function alterarContatoScreen({ navigation }) {
+  return (
+    <View>
+      <Header
+        centerComponent={{ text: 'Contato', style: { color: '#fff', fontSize: 20 } }}
+        leftComponent={<Icon onPress={() => navigation.navigate('listScreen')} name="arrow-left" size={24} color="#ffffff"></Icon>}
+
+      />
+
+      <Input
+        label='nome'
+      />
+      <Input
+        label='email'
+      />
+      <Input
+        label='Telefone'
+
+      />
+      <Button
+        buttonStyle={{ width: 365, alignSelf: 'center' }}
+        title="Alterar"
+      />
+      <Button
+        buttonStyle={{ width: 365, backgroundColor: 'red', marginTop: 15, alignSelf: 'center' }}
+        title="Excluir"
+
+      />
+
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+      </View>
+    </View>
+
+  );
+}
+
+
+function listScreen({ navigation }) {
+  const list = [
+    {
+      name: 'Gilson Romão',
+      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/247821742_517308889897862_952747548644422010_n.jpg?ccb=11-4&oh=01_AVyza-qXSmJaxp6tpmIUp1hX8p8PjC_PCeUZnksLnESeKQ&oe=63556EF0',
+      subtitle: ' 81 988411487'
+    },
+    {
+      name: 'Felipe Rocha',
+      avatar_url: 'https://avatars.githubusercontent.com/u/14117712?v=4',
+      subtitle: '81 988416113'
+    },
+    {
+      name: 'Marineide França',
+      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/301363286_527093989422041_5733080581339174176_n.jpg?ccb=11-4&oh=01_AVxL5dJ8btB_jYPaKCl_HZJu2i1pTbS0bON9iFuZ5pblZQ&oe=6352286E',
+      subtitle: '81 987686855'
+    },
+
+    {
+      name: 'Ana Maria',
+      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/169238802_656959332197220_793667967797382750_n.jpg?stp=dst-jpg_s96x96&ccb=11-4&oh=01_AVwW6I0Q3zniaGydZQQAxm1HKVPZBWC1z5FxNDon35Pc2g&oe=6355C32C',
+      subtitle: '81 987686805'
+    },
+  ]
+  return (
+
+    <View>
+      <Header
+        centerComponent={{ text: 'Lista de Contatos', style: { color: '#fff', fontSize: 20 } }}
+        rightComponent={<Icon name="plus" size={24} color="#ffffff" onPress={() => navigation.navigate('adicionarContatoScreen')}></Icon>}
+      />
+
+
+      <View>
+        {
+          list.map((l, i) => (
+            <ListItem key={i} bottomDivider onPress={() => navigation.navigate('alterarContatoScreen')}>
+              <Avatar source={{ uri: l.avatar_url }} />
+              <ListItem.Content>
+                <ListItem.Title>{l.name}</ListItem.Title>
+                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ))
+        }
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Stack = createNativeStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="listScreen" component={listScreen} />
+        <Stack.Screen name="cadastrarScreen" component={CadastrarScreen} />
+        <Stack.Screen name="adicionarContatoScreen" component={adicionarContatoScreen} />
+        <Stack.Screen name="alterarContatoScreen" component={alterarContatoScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export default App;
