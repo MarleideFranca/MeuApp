@@ -1,9 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, Input, Avatar, ListItem, Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import {useIsFocused } from '@react-navigation/native';
+
+async function adicionarContato(nome, email,telefone,{navigation}){
+  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+    nome: nome,
+    email: email,
+    telefone: telefone
+  })
+  .then((response)=>{
+    console.log("Deu certo!");
+    navigation.goBack();
+  })
+  .catch((Erro)=>{
+    console.log(Erro);
+  })
+}
 
 function HomeScreen({ navigation }) {
   return (
@@ -79,6 +97,13 @@ function CadastrarScreen({ navigation }) {
 }
 
 function adicionarContatoScreen({ navigation }) {
+
+  const [adicionarContatos, setadicionarContatos] = useState([]);
+  const [nome,setNome] = useState('');
+  const [email,setEmail] = useState('');
+  const [telefone,setTelefone] = useState('');
+
+
   return (
     <View>
       <Header
@@ -89,17 +114,21 @@ function adicionarContatoScreen({ navigation }) {
 
       <Input
         label='nome'
+        onChangeText={nome => setNome(nome)}
       />
       <Input
         label='email'
+        onChangeText={email => setEmail(email)}
       />
       <Input
         label='Telefone'
+        onChangeText={telefone=> setTelefone(telefone)}
 
       />
       <Button
         buttonStyle={{ width: 365, alignSelf: 'center' }}
         title="Salvar"
+        onPress={()=> adicionarContato(nome,email,telefone,{navigation})}
       />
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -149,29 +178,47 @@ function alterarContatoScreen({ navigation }) {
 
 
 function listScreen({ navigation }) {
-  const list = [
-    {
-      name: 'Gilson Romão',
-      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/247821742_517308889897862_952747548644422010_n.jpg?ccb=11-4&oh=01_AVyza-qXSmJaxp6tpmIUp1hX8p8PjC_PCeUZnksLnESeKQ&oe=63556EF0',
-      subtitle: ' 81 988411487'
-    },
-    {
-      name: 'Felipe Rocha',
-      avatar_url: 'https://avatars.githubusercontent.com/u/14117712?v=4',
-      subtitle: '81 988416113'
-    },
-    {
-      name: 'Marineide França',
-      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/301363286_527093989422041_5733080581339174176_n.jpg?ccb=11-4&oh=01_AVxL5dJ8btB_jYPaKCl_HZJu2i1pTbS0bON9iFuZ5pblZQ&oe=6352286E',
-      subtitle: '81 987686855'
-    },
+  /*   const list = [
+      {
+        name: 'Gilson Romão',
+        avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/247821742_517308889897862_952747548644422010_n.jpg?ccb=11-4&oh=01_AVyza-qXSmJaxp6tpmIUp1hX8p8PjC_PCeUZnksLnESeKQ&oe=63556EF0',
+        subtitle: ' 81 988411487'
+      },
+      {
+        name: 'Felipe Rocha',
+        avatar_url: 'https://avatars.githubusercontent.com/u/14117712?v=4',
+        subtitle: '81 988416113'
+      },
+      {
+        name: 'Marineide França',
+        avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/301363286_527093989422041_5733080581339174176_n.jpg?ccb=11-4&oh=01_AVxL5dJ8btB_jYPaKCl_HZJu2i1pTbS0bON9iFuZ5pblZQ&oe=6352286E',
+        subtitle: '81 987686855'
+      },
+  
+      {
+        name: 'Ana Maria',
+        avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/169238802_656959332197220_793667967797382750_n.jpg?stp=dst-jpg_s96x96&ccb=11-4&oh=01_AVwW6I0Q3zniaGydZQQAxm1HKVPZBWC1z5FxNDon35Pc2g&oe=6355C32C',
+        subtitle: '81 987686805'
+      },
+    ] */
+  const [listaUsuarios, setlistaUsuarios] = useState([]);
+  const isFocused=useIsFocused();
 
-    {
-      name: 'Ana Maria',
-      avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/169238802_656959332197220_793667967797382750_n.jpg?stp=dst-jpg_s96x96&ccb=11-4&oh=01_AVwW6I0Q3zniaGydZQQAxm1HKVPZBWC1z5FxNDon35Pc2g&oe=6355C32C',
-      subtitle: '81 987686805'
-    },
-  ]
+  useEffect(() => {
+    
+    async function getUsuarios() {
+      
+      const res = await axios.get('http://professornilson.com/testeservico/clientes')
+        .then(function (response) {
+          setlistaUsuarios(response.data);
+        })
+        .catch(function (erro) {
+          console.log(erro);
+        })
+    }
+    getUsuarios();
+  }, [isFocused])
+
   return (
 
     <View>
@@ -182,17 +229,19 @@ function listScreen({ navigation }) {
 
 
       <View>
+        <ScrollView>
         {
-          list.map((l, i) => (
+          listaUsuarios.map((l, i) => (
             <ListItem key={i} bottomDivider onPress={() => navigation.navigate('alterarContatoScreen')}>
-              <Avatar source={{ uri: l.avatar_url }} />
+              <Avatar source={{ uri: 'https://cdn2.iconfinder.com/data/icons/circle-avatars-1/128/050_girl_avatar_profile_woman_suit_student_officer-512.png' }} />
               <ListItem.Content>
-                <ListItem.Title>{l.name}</ListItem.Title>
-                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                <ListItem.Title>{l.nome}</ListItem.Title>
+                <ListItem.Subtitle>{l.telefone}</ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           ))
         }
+        </ScrollView>
       </View>
     </View>
   );
