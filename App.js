@@ -25,7 +25,7 @@ async function adicionarContato(nome, email,telefone,{navigation}){
 
 // Alterar contato usando o axios
 async function alterarContato(nome, email,telefone,{navigation}){
-  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+  var res= axios.put("http://professornilson.com/testeservico/clientes", {
     nome: nome,
     email: email,
     telefone: telefone
@@ -41,7 +41,7 @@ async function alterarContato(nome, email,telefone,{navigation}){
 
 // Excluir contato usando o axios
 async function excluirContato(nome, email,telefone,{navigation}){
-  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+  var res= axios.delete("http://professornilson.com/testeservico/clientes", {
     nome: nome,
     email: email,
     telefone: telefone
