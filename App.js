@@ -23,6 +23,37 @@ async function adicionarContato(nome, email,telefone,{navigation}){
   })
 }
 
+// Alterar contato usando o axios
+async function alterarContato(nome, email,telefone,{navigation}){
+  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+    nome: nome,
+    email: email,
+    telefone: telefone
+  })
+  .then((response)=>{
+    console.log("Deu certo!");
+    navigation.goBack();
+  })
+  .catch((Erro)=>{
+    console.log(Erro);
+  })
+}
+
+// Excluir contato usando o axios
+async function excluirContato(nome, email,telefone,{navigation}){
+  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+    nome: nome,
+    email: email,
+    telefone: telefone
+  })
+  .then((response)=>{
+    console.log("Deu certo!");
+    navigation.goBack();
+  })
+  .catch((Erro)=>{
+    console.log(Erro);
+  })
+}
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
