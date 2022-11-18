@@ -1,60 +1,87 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, Input, Avatar, ListItem, Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import {useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
-async function adicionarContato(nome, email,telefone,{navigation}){
-  var res= axios.post("http://professornilson.com/testeservico/clientes", {
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCGu-FmfDA4WFsOJ1NZ0aO2jLtbUVLReL8",
+  authDomain: "meuapp-86462.firebaseapp.com",
+  projectId: "meuapp-86462",
+  storageBucket: "meuapp-86462.appspot.com",
+  messagingSenderId: "914474655871",
+  appId: "1:914474655871:web:cbe435179a67e60d86df4a",
+  measurementId: "G-GQ5HBQM0BP"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+
+async function adicionarContato(nome, email, telefone, { navigation }) {
+  var res = axios.post("http://professornilson.com/testeservico/clientes", {
     nome: nome,
     email: email,
     telefone: telefone
   })
-  .then((response)=>{
-    console.log("Deu certo!");
-    navigation.goBack();
-  })
-  .catch((Erro)=>{
-    console.log(Erro);
-  })
+    .then((response) => {
+      console.log("Deu certo!");
+      navigation.goBack();
+    })
+    .catch((Erro) => {
+      console.log(Erro);
+    })
 }
 
 // Alterar contato usando o axios
-async function alterarContato(nome, email,telefone,{navigation}){
-  var res= axios.put("http://professornilson.com/testeservico/clientes", {
+async function alterarContato(nome, email, telefone, { navigation }) {
+  var res = axios.put("http://professornilson.com/testeservico/clientes", {
     nome: nome,
     email: email,
     telefone: telefone
   })
-  .then((response)=>{
-    console.log("Deu certo!");
-    navigation.goBack();
-  })
-  .catch((Erro)=>{
-    console.log(Erro);
-  })
+    .then((response) => {
+      console.log("Deu certo!");
+      navigation.goBack();
+    })
+    .catch((Erro) => {
+      console.log(Erro);
+    })
 }
 
 // Excluir contato usando o axios
-async function excluirContato(nome, email,telefone,{navigation}){
-  var res= axios.delete("http://professornilson.com/testeservico/clientes", {
+async function excluirContato(nome, email, telefone, { navigation }) {
+  var res = axios.delete("http://professornilson.com/testeservico/clientes", {
     nome: nome,
     email: email,
     telefone: telefone
   })
-  .then((response)=>{
-    console.log("Deu certo!");
-    navigation.goBack();
-  })
-  .catch((Erro)=>{
-    console.log(Erro);
-  })
+    .then((response) => {
+      console.log("Deu certo!");
+      navigation.goBack();
+    })
+    .catch((Erro) => {
+      console.log(Erro);
+    })
 }
+
 function HomeScreen({ navigation }) {
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -70,15 +97,29 @@ function HomeScreen({ navigation }) {
 
       <Input
         label='Login'
+        value={login}
+        onChangeText={login => setLogin(login)}
       />
       <Input
         label='Senha'
+        value={password}
+        onChangeText={password => setPassword(password)}
         secureTextEntry={true}
       />
       <Button
         buttonStyle={{ width: 365 }}
         title="Login"
-        onPress={() => navigation.navigate('listScreen')}
+        onPress={() => {
+          signInWithEmailAndPassword(auth, login, password)
+            .then((userCredential) => {
+              navigation.navigate('listScreen');
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log(errorMessage);
+            });
+        }}
       />
       <Button
         buttonStyle={{ width: 365, backgroundColor: 'red', marginTop: 15 }}
@@ -93,6 +134,8 @@ function HomeScreen({ navigation }) {
   );
 }
 function CadastrarScreen({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   return (
     <View>
       <Header
@@ -109,14 +152,34 @@ function CadastrarScreen({ navigation }) {
       />
       <Input
         label='email'
+        value={email}
+        onChangeText={email => setEmail(email)}
       />
       <Input
         label='Senha'
+        value={password}
+        onChangeText={password => setPassword(password)}
         secureTextEntry={true}
       />
       <Button
         buttonStyle={{ width: 365, alignSelf: 'center' }}
         title="Salvar"
+        onPress={() => {
+
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // Signed in 
+              //const user = userCredential.user;
+              // ...
+              navigation.goBack();
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log('erro', errorMessage);
+              // ..
+            });
+        }}
       />
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -130,9 +193,9 @@ function CadastrarScreen({ navigation }) {
 function adicionarContatoScreen({ navigation }) {
 
   const [adicionarContatos, setadicionarContatos] = useState([]);
-  const [nome,setNome] = useState('');
-  const [email,setEmail] = useState('');
-  const [telefone,setTelefone] = useState('');
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
 
 
   return (
@@ -153,13 +216,13 @@ function adicionarContatoScreen({ navigation }) {
       />
       <Input
         label='Telefone'
-        onChangeText={telefone=> setTelefone(telefone)}
+        onChangeText={telefone => setTelefone(telefone)}
 
       />
       <Button
         buttonStyle={{ width: 365, alignSelf: 'center' }}
         title="Salvar"
-        onPress={()=> adicionarContato(nome,email,telefone,{navigation})}
+        onPress={() => adicionarContato(nome, email, telefone, { navigation })}
       />
 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -233,12 +296,12 @@ function listScreen({ navigation }) {
       },
     ] */
   const [listaUsuarios, setlistaUsuarios] = useState([]);
-  const isFocused=useIsFocused();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    
+
     async function getUsuarios() {
-      
+
       const res = await axios.get('http://professornilson.com/testeservico/clientes')
         .then(function (response) {
           setlistaUsuarios(response.data);
@@ -255,23 +318,30 @@ function listScreen({ navigation }) {
     <View>
       <Header
         centerComponent={{ text: 'Lista de Contatos', style: { color: '#fff', fontSize: 20 } }}
-        rightComponent={<Icon name="plus" size={24} color="#ffffff" onPress={() => navigation.navigate('adicionarContatoScreen')}></Icon>}
+        rightComponent={<Icon name="sign-out" size={24} color="#ffffff" onPress={() => {
+          signOut(auth).then(() => {
+            navigation.navigate('Home');
+          }).catch((error) => {
+            console.log(error.message);
+          });
+        }}></Icon>}
+        leftComponent={<Icon name="plus" size={24} color="#ffffff" onPress={() => navigation.navigate('adicionarContatoScreen')}></Icon>}
       />
 
 
       <View>
         <ScrollView>
-        {
-          listaUsuarios.map((l, i) => (
-            <ListItem key={i} bottomDivider onPress={() => navigation.navigate('alterarContatoScreen')}>
-              <Avatar source={{ uri: 'https://cdn2.iconfinder.com/data/icons/circle-avatars-1/128/050_girl_avatar_profile_woman_suit_student_officer-512.png' }} />
-              <ListItem.Content>
-                <ListItem.Title>{l.nome}</ListItem.Title>
-                <ListItem.Subtitle>{l.telefone}</ListItem.Subtitle>
-              </ListItem.Content>
-            </ListItem>
-          ))
-        }
+          {
+            listaUsuarios.map((l, i) => (
+              <ListItem key={i} bottomDivider onPress={() => navigation.navigate('alterarContatoScreen')}>
+                <Avatar source={{ uri: 'https://cdn2.iconfinder.com/data/icons/circle-avatars-1/128/050_girl_avatar_profile_woman_suit_student_officer-512.png' }} />
+                <ListItem.Content>
+                  <ListItem.Title>{l.nome}</ListItem.Title>
+                  <ListItem.Subtitle>{l.telefone}</ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            ))
+          }
         </ScrollView>
       </View>
     </View>
