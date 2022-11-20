@@ -272,7 +272,7 @@ function alterarContatoScreen({ navigation }) {
 
 
 function listScreen({ navigation }) {
-  /*   const list = [
+     const list = [
       {
         name: 'Gilson Romão',
         avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/247821742_517308889897862_952747548644422010_n.jpg?ccb=11-4&oh=01_AVyza-qXSmJaxp6tpmIUp1hX8p8PjC_PCeUZnksLnESeKQ&oe=63556EF0',
@@ -293,8 +293,8 @@ function listScreen({ navigation }) {
         name: 'Ana Maria',
         avatar_url: 'https://pps.whatsapp.net/v/t61.24694-24/169238802_656959332197220_793667967797382750_n.jpg?stp=dst-jpg_s96x96&ccb=11-4&oh=01_AVwW6I0Q3zniaGydZQQAxm1HKVPZBWC1z5FxNDon35Pc2g&oe=6355C32C',
         subtitle: '81 987686805'
-      },
-    ] */
+      }];
+    
   const [listaUsuarios, setlistaUsuarios] = useState([]);
   const isFocused = useIsFocused();
 
